@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 470" role="img" aria-label="PLAY FIGHT — EYAL BENER — MOVE PLAY CONNECT">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700&display=swap');
+    .t{font-family:Raleway,Arial,sans-serif;text-anchor:middle}
+  </style>
+  <defs>
+    <clipPath id="artClip"><rect x="0" y="0" width="720" height="322"/></clipPath>
+  </defs>
+  <image href="%D7%9C%D7%95%D7%92%D7%95%20%D7%A1%D7%95%D7%A4%D7%99%20%D7%A9%D7%A7%D7%95%D7%A3.png" x="0" y="0" width="720" height="600" clip-path="url(#artClip)"/>
+  <text class="t" x="360" y="365" font-size="52" font-weight="400" letter-spacing="8" fill="#20211d">PLAY FIGHT</text>
+  <text class="t" x="360" y="414" font-size="27" font-weight="700" letter-spacing="5" fill="#a95f47">EYAL BENER</text>
+  <text class="t" x="360" y="452" font-size="18" font-weight="500" letter-spacing="3.4" fill="#4b4d3b">MOVE · PLAY · CONNECT</text>
+</svg>
