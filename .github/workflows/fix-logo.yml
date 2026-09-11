@@ -1,0 +1,45 @@
+name: Fix logo placement
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-logo.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-logo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fix PLAY FIGHT logo placement only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old_css = '.playfight-mark{width:82px;height:auto;display:block;flex:none;background:transparent}'
+          new_css = '.playfight-mark{position:absolute;right:0;top:50%;transform:translateY(-50%);width:128px;height:auto;display:block;z-index:3;background:transparent;pointer-events:none}'
+          if old_css in s:
+              s = s.replace(old_css, new_css, 1)
+          s = s.replace('.playfight-mark{width:62px}', '.playfight-mark{width:94px}', 1)
+          old_nav = '<nav><div class="wrap navin"><div class="navlinks"><img class="playfight-mark" src="playfight-logo-raleway.svg" alt="PLAY FIGHT">'
+          new_nav = '<nav><div class="wrap navin"><img class="playfight-mark" src="playfight-logo-raleway.svg" alt="PLAY FIGHT"><div class="navlinks">'
+          if old_nav in s:
+              s = s.replace(old_nav, new_nav, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+          else
+            git commit -m "Fix PLAY FIGHT logo visibility"
+            git push
+          fi
