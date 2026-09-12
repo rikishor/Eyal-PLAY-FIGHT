@@ -1,4 +1,4 @@
-name: Standardize PLAY-FIGHT text only
+name: Update one intro sentence
 on:
   push:
     paths:
@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Change wording only
-        run: sed -i '/^<main>$/,$ s/PLAYFIGHT/PLAY-FIGHT/g' index.html
+      - name: Update sentence
+        run: python3 -c "from pathlib import Path; p=Path('index.html'); s=p.read_text(); s=s.replace('כשמשהו אמיתי קורה.','ולרקוד יחד.',1); p.write_text(s)"
       - name: Commit
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Standardize PLAY-FIGHT text only'
+          git commit -m 'Update one intro sentence'
           git push
