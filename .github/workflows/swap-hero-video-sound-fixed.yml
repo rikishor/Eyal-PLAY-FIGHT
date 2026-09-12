@@ -1,4 +1,4 @@
-name: Adjust hero sound return behavior
+name: Fix hero sound playback
 on:
   push:
     paths:
@@ -10,16 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Update hero sound behavior
+      - name: Remove playback calls from sound handling only
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p = Path('index.html')
-          s = p.read_text()
-          start = s.index("const heroSection=document.querySelector('.hero');")
-          end = s.index("video.addEventListener('pause'", start)
-          replacement = "const heroSection=document.querySelector('.hero');let heroVisible=true;let soundEnabled=false;const enableSound=()=>{if(soundEnabled)return;soundEnabled=true;video.volume=1;if(heroVisible){video.muted=false;video.play().catch(()=>{});}};document.addEventListener('pointerdown',enableSound,{capture:true,once:true});if(heroSection){const soundObserver=new IntersectionObserver((entries)=>{heroVisible=entries[0].isIntersecting;if(soundEnabled){video.muted=!heroVisible;if(heroVisible)video.play().catch(()=>{});}}, {threshold:0});soundObserver.observe(heroSection);}"
-          p.write_text(s[:start] + replacement + s[end:])
+          p=Path('index.html')
+          s=p.read_text()
+          start=s.index("const heroSection=document.querySelector('.hero');")
+          end=s.index("video.addEventListener('pause'",start)
+          block=s[start:end]
+          block=block.replace("video.play().catch(()=>{});","")
+          p.write_text(s[:start]+block+s[end:])
           PY
       - name: Commit only index.html
         run: |
@@ -27,5 +28,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Adjust hero sound return behavior'
+          git commit -m 'Fix hero sound playback'
           git push
