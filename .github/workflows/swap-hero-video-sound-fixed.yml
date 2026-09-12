@@ -1,4 +1,4 @@
-name: Add faint muted hero video behind whole site
+name: Adjust background video opacity
 on:
   push:
     paths:
@@ -10,25 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Add only faint background video layer
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('index.html')
-          s=p.read_text()
-          css=""".site-bg-video{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;opacity:.035;pointer-events:none;z-index:1;background:transparent}main section>.wrap,footer>.wrap{position:relative;z-index:2}.hero>#hero-video{position:relative;z-index:2}\n"""
-          if '.site-bg-video{' not in s:
-              s=s.replace('</style>',css+'</style>',1)
-          bg='''<video class="site-bg-video" autoplay muted playsinline webkit-playsinline loop preload="auto" aria-hidden="true"><source src="סרטון עמוד ראשון סאונד מתוקן.mp4" type="video/mp4"></video>'''
-          if 'class="site-bg-video"' not in s:
-              s=s.replace('<body>','<body>'+bg,1)
-          p.write_text(s)
-          PY
-      - name: Commit only index.html
+      - name: Adjust opacity
+        run: sed -i 's/opacity:.035/opacity:.07/' index.html
+      - name: Commit
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Add faint muted video behind site content'
+          git commit -m 'Adjust background video opacity'
           git push
