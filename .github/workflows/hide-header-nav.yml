@@ -1,0 +1,34 @@
+name: Hide header nav words
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hide-header-nav.yml'
+jobs:
+  hide-nav:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Hide only the header navigation words
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '.navlinks a{text-decoration:none;font-size:.87rem;font-weight:600}'
+          new = '.navlinks a{text-decoration:none;font-size:.87rem;font-weight:600;visibility:hidden}'
+          if old not in s:
+              raise SystemExit('Target CSS rule not found; refusing to change anything else.')
+          s2 = s.replace(old, new, 1)
+          p.write_text(s2, encoding='utf-8')
+          PY
+      - name: Commit exact change
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Hide header navigation words only'
+          git push
