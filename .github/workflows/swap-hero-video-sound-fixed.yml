@@ -1,4 +1,4 @@
-name: Change playfulness icon only
+name: Reorder value shapes only
 on:
   push:
     paths:
@@ -10,16 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Change icon only
+      - name: Reorder only
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          old='<div class="value play"><i>𓀠</i><b>משחקיות</b>'
-          new='''<div class="value play"><i><svg viewBox="0 0 64 64" width="58" height="58" aria-hidden="true" style="display:block;overflow:visible"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="11" r="5.2"/><path d="M13 17 C18 24,25 27,32 24 C39 21,43 15,45 9"/><path d="M32 24 C36 33,34 41,29 50 C26 55,23 59,19 61"/><path d="M30 35 C25 40,20 43,16 41 C13 39,13 36,16 34"/></g></svg></i><b>משחקיות</b>'''
-          if old not in s: raise SystemExit('current play icon not found')
-          p.write_text(s.replace(old,new,1))
+          a=s.index('<div class="values organic-values">')
+          b=s.index('</div></div></div></section>',a)
+          block=s[a:b]
+          import re
+          items=re.findall(r'<div class="value (?:listen|play|rewire|conflict)">.*?</div>',block)
+          by={re.search(r'class="value (listen|play|rewire|conflict)"',x).group(1):x for x in items}
+          if set(by)!={'listen','play','rewire','conflict'}: raise SystemExit('values not found')
+          new='<div class="values organic-values">'+by['listen']+by['play']+by['conflict']+by['rewire']
+          s=s[:a]+new+s[b:]
+          p.write_text(s)
           PY
       - name: Commit
         run: |
@@ -27,5 +33,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Match playfulness icon to reference'
+          git commit -m 'Reorder value shapes only'
           git push
