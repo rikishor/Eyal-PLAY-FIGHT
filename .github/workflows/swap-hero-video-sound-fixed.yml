@@ -1,4 +1,4 @@
-name: Update one intro sentence
+name: Redesign values only
 on:
   push:
     paths:
@@ -10,13 +10,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Update sentence
-        run: python3 -c "from pathlib import Path; p=Path('index.html'); s=p.read_text(); s=s.replace('כשמשהו אמיתי קורה.','ולרקוד יחד.',1); p.write_text(s)"
+      - name: Redesign values
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old='<div class="values"><div class="value"><b>הקשבה</b><span>לגוף, לפרטנר ולמה שקורה עכשיו.</span></div><div class="value"><b>קונפליקט</b><span>לא להימנע ממנו — ללמוד לנוע בתוכו.</span></div><div class="value"><b>משחקיות</b><span>להחזיר סקרנות, הומור וחופש לתנועה.</span></div><div class="value"><b>חיווט מחדש</b><span>לתרגל תגובות חדשות במקום האוטומט.</span></div></div>'
+          new='<div class="values organic-values"><div class="value listen"><i>∞</i><b>הקשבה</b><span>לגוף, לפרטנר ולמה שקורה עכשיו.</span></div><div class="value play"><i>↻</i><b>משחקיות</b><span>להחזיר סקרנות, הומור וחופש לתנועה.</span></div><div class="value rewire"><i>✳</i><b>חיווט מחדש</b><span>לתרגל תגובות חדשות במקום האוטומט.</span></div><div class="value conflict"><i><u></u><em></em></i><b>קונפליקט</b><span>לא להימנע ממנו — ללמוד לנוע בתוכו.</span></div></div>'
+          css='''<style>.definition-grid{grid-template-columns:1fr;gap:52px}.organic-values{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;direction:ltr}.organic-values:before{content:"";position:absolute;left:-2%;right:-2%;top:45%;height:2px;background:linear-gradient(90deg,transparent 0 4%,#9b744f 4% 96%,transparent 96%);opacity:.55;z-index:0}.organic-values .value{position:relative;z-index:1;min-height:270px;border:0;padding:30px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;direction:rtl}.organic-values .listen{background:#edc2a8;border-radius:44% 56% 48% 52%/39% 43% 57% 61%}.organic-values .play{background:#d9ddce;border-radius:51% 49% 55% 45%/43% 56% 44% 57%}.organic-values .rewire{background:#f2dfc5;border-radius:47% 53% 43% 57%/53% 40% 60% 47%}.organic-values .conflict{background:#dce4e9;border-radius:54% 46% 51% 49%/45% 55% 45% 55%}.organic-values i{height:64px;min-width:64px;margin-bottom:12px;display:grid;place-items:center;font:400 2.9rem/1 Heebo;color:#6e5232;font-style:normal;text-decoration:none}.organic-values .play i{color:#334433}.organic-values .conflict i{position:relative;width:72px}.organic-values .conflict i u,.organic-values .conflict i em{position:absolute;top:20px;width:48px;height:24px;border-top:3px solid #263d46;border-radius:50%;text-decoration:none}.organic-values .conflict i u{left:0;transform:rotate(25deg)}.organic-values .conflict i em{right:0;transform:rotate(-25deg)}.organic-values b{font:600 1.22rem Rubik;margin-bottom:8px}.organic-values span{font-size:.95rem;line-height:1.55;color:#55564e;max-width:210px}@media(max-width:900px){.organic-values{grid-template-columns:1fr 1fr}.organic-values:before{display:none}}@media(max-width:600px){.organic-values{grid-template-columns:1fr 1fr!important;gap:10px}.organic-values .value{min-height:205px;padding:20px 12px}.organic-values i{height:48px;min-width:48px;font-size:2.2rem}.organic-values b{font-size:1rem}.organic-values span{font-size:.82rem}}</style>'''
+          if old not in s: raise SystemExit('values block not found')
+          s=s.replace(old,new,1).replace('</head>',css+'</head>',1)
+          p.write_text(s)
+          PY
       - name: Commit
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Update one intro sentence'
+          git commit -m 'Redesign values only'
           git push
