@@ -16,9 +16,9 @@ jobs:
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          old='<div class="value play"><i>↻</i><b>משחקיות</b>'
-          new='<div class="value play"><i>𖦹</i><b>משחקיות</b>'
-          if old not in s: raise SystemExit('play icon not found')
+          old='<div class="value play"><i>𖦹</i><b>משחקיות</b>'
+          new='<div class="value play"><i>𓀠</i><b>משחקיות</b>'
+          if old not in s: raise SystemExit('current play icon not found')
           p.write_text(s.replace(old,new,1))
           PY
       - name: Commit
@@ -27,5 +27,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Change playfulness icon only'
+          git commit -m 'Use moving figure icon only'
           git push
