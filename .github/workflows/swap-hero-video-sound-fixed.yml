@@ -1,4 +1,4 @@
-name: Update hero sound tap behavior
+name: Limit hero sound toggle to visible video
 on:
   push:
     paths:
@@ -10,16 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Update sound toggle only
+      - name: Update hero sound behavior only
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          old="const enableSound=()=>{video.muted=false;video.volume=1;const p=video.play();if(p&&typeof p.catch==='function'){p.catch(()=>{video.muted=true;video.play().catch(()=>{});});}};document.addEventListener('pointerdown',enableSound,{capture:true,once:true});document.addEventListener('touchend',enableSound,{capture:true,once:true});"
-          new="const toggleSound=()=>{if(video.muted){video.muted=false;video.volume=1;const p=video.play();if(p&&typeof p.catch==='function'){p.catch(()=>{video.muted=true;video.play().catch(()=>{});});}}else{video.muted=true;}};document.addEventListener('pointerdown',toggleSound,{capture:true});"
+          old="const toggleSound=()=>{if(video.muted){video.muted=false;video.volume=1;const p=video.play();if(p&&typeof p.catch==='function'){p.catch(()=>{video.muted=true;video.play().catch(()=>{});});}}else{video.muted=true;}};document.addEventListener('pointerdown',toggleSound,{capture:true});"
+          new="const hero=document.querySelector('.hero');let heroVisible=true;const toggleSound=()=>{if(!heroVisible)return;if(video.muted){video.muted=false;video.volume=1;const p=video.play();if(p&&typeof p.catch==='function'){p.catch(()=>{video.muted=true;video.play().catch(()=>{});});}}else{video.muted=true;}};if(hero){hero.addEventListener('pointerdown',toggleSound,{capture:true});const soundObserver=new IntersectionObserver((entries)=>{const entry=entries[0];heroVisible=entry.isIntersecting;if(!heroVisible)video.muted=true;},{threshold:0});soundObserver.observe(hero);}"
           if s.count(old) != 1:
-              raise SystemExit('Expected exactly one current sound block')
+              raise SystemExit('Expected exactly one current sound toggle block')
           p.write_text(s.replace(old,new,1))
           PY
       - name: Commit only index.html
@@ -28,5 +28,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Toggle hero sound on tap'
+          git commit -m 'Limit hero sound to visible video'
           git push
