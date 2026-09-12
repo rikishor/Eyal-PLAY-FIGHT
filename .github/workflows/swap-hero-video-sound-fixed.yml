@@ -1,4 +1,4 @@
-name: Fix hero sound visibility handler
+name: Adjust hero sound return behavior
 on:
   push:
     paths:
@@ -10,17 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fix hero sound behavior only
+      - name: Update hero sound behavior
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p=Path('index.html')
-          s=p.read_text()
-          old="const hero=document.querySelector('.hero');let heroVisible=true;const toggleSound=()=>{if(!heroVisible)return;if(video.muted){video.muted=false;video.volume=1;const p=video.play();if(p&&typeof p.catch==='function'){p.catch(()=>{video.muted=true;video.play().catch(()=>{});});}}else{video.muted=true;}};if(hero){hero.addEventListener('pointerdown',toggleSound,{capture:true});const soundObserver=new IntersectionObserver((entries)=>{const entry=entries[0];heroVisible=entry.isIntersecting;if(!heroVisible)video.muted=true;},{threshold:0});soundObserver.observe(hero);}"
-          new="const heroSection=document.querySelector('.hero');let heroVisible=true;const toggleSound=()=>{if(!heroVisible)return;if(video.muted){video.muted=false;video.volume=1;const p=video.play();if(p&&typeof p.catch==='function'){p.catch(()=>{video.muted=true;video.play().catch(()=>{});});}}else{video.muted=true;}};if(heroSection){heroSection.addEventListener('pointerdown',toggleSound,{capture:true});const soundObserver=new IntersectionObserver((entries)=>{const entry=entries[0];heroVisible=entry.isIntersecting;if(!heroVisible)video.muted=true;},{threshold:0});soundObserver.observe(heroSection);}"
-          if s.count(old) != 1:
-              raise SystemExit('Expected exactly one current hero sound block')
-          p.write_text(s.replace(old,new,1))
+          p = Path('index.html')
+          s = p.read_text()
+          start = s.index("const heroSection=document.querySelector('.hero');")
+          end = s.index("video.addEventListener('pause'", start)
+          replacement = "const heroSection=document.querySelector('.hero');let heroVisible=true;let soundEnabled=false;const enableSound=()=>{if(soundEnabled)return;soundEnabled=true;video.volume=1;if(heroVisible){video.muted=false;video.play().catch(()=>{});}};document.addEventListener('pointerdown',enableSound,{capture:true,once:true});if(heroSection){const soundObserver=new IntersectionObserver((entries)=>{heroVisible=entries[0].isIntersecting;if(soundEnabled){video.muted=!heroVisible;if(heroVisible)video.play().catch(()=>{});}}, {threshold:0});soundObserver.observe(heroSection);}"
+          p.write_text(s[:start] + replacement + s[end:])
           PY
       - name: Commit only index.html
         run: |
@@ -28,5 +27,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Fix hero sound visibility handler'
+          git commit -m 'Adjust hero sound return behavior'
           git push
