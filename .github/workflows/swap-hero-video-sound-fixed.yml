@@ -1,4 +1,4 @@
-name: Adjust background video opacity
+name: Show background video only after hero
 on:
   push:
     paths:
@@ -10,13 +10,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Adjust opacity
-        run: sed -i 's/opacity:.035/opacity:.07/' index.html
-      - name: Commit
+      - name: Hide background video while hero is visible
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old='.site-bg-video{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;opacity:.07;pointer-events:none;z-index:1;background:transparent}'
+          new='.site-bg-video{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;opacity:0;pointer-events:none;z-index:1;background:transparent;transition:opacity .45s ease}body.bg-video-active .site-bg-video{opacity:.07}'
+          if old not in s:
+              raise SystemExit('Expected background video CSS not found')
+          s=s.replace(old,new,1)
+          marker='</body>'
+          script="""<script>(()=>{const h=document.querySelector('.hero');if(!h)return;const sync=()=>document.body.classList.toggle('bg-video-active',window.scrollY>=h.offsetHeight-2);sync();window.addEventListener('scroll',sync,{passive:true});window.addEventListener('resize',sync);})();</script>"""
+          if 'bg-video-active' not in s[s.find('<body>'):]:
+              s=s.replace(marker,script+marker,1)
+          p.write_text(s)
+          PY
+      - name: Commit only index.html
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Adjust background video opacity'
+          git commit -m 'Show background video only after hero'
           git push
