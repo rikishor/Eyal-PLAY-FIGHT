@@ -1,4 +1,4 @@
-name: Fix hero sound playback
+name: Repair hero sound script syntax
 on:
   push:
     paths:
@@ -10,17 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Remove playback calls from sound handling only
+      - name: Repair only the hero sound block
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          start=s.index("const heroSection=document.querySelector('.hero');")
-          end=s.index("video.addEventListener('pause'",start)
-          block=s[start:end]
-          block=block.replace("video.play().catch(()=>{});","")
-          p.write_text(s[:start]+block+s[end:])
+          old="if(soundEnabled){video.muted=!heroVisible;if(heroVisible)}"
+          new="if(soundEnabled){video.muted=!heroVisible;}"
+          if s.count(old) != 1:
+              raise SystemExit(f'Expected one broken sound block, found {s.count(old)}')
+          p.write_text(s.replace(old,new,1))
           PY
       - name: Commit only index.html
         run: |
@@ -28,5 +28,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Fix hero sound playback'
+          git commit -m 'Repair hero sound script syntax'
           git push
