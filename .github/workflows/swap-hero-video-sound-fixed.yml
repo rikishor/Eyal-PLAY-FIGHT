@@ -1,0 +1,32 @@
+name: Swap hero to sound-fixed video
+on:
+  push:
+    paths:
+      - '.github/workflows/swap-hero-video-sound-fixed.yml'
+permissions:
+  contents: write
+jobs:
+  swap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace hero video source only
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old='%D7%A1%D7%A8%D7%98%D7%95%D7%9F%20%D7%A2%D7%9E%D7%95%D7%93%20%D7%A8%D7%90%D7%A9%D7%95%D7%9F%20%D7%A2%D7%9D%20%D7%9E%D7%95%D7%96%D7%99%D7%A7%D7%94%202.mp4'
+          new='%D7%A1%D7%A8%D7%98%D7%95%D7%9F%20%D7%A2%D7%9E%D7%95%D7%93%20%D7%A8%D7%90%D7%A9%D7%95%D7%9F%20%D7%A1%D7%90%D7%95%D7%A0%D7%93%20%D7%9E%D7%AA%D7%95%D7%A7%D7%9F.mp4'
+          if s.count(old) != 1:
+              raise SystemExit(f'Expected exactly one current hero video source, found {s.count(old)}')
+          p.write_text(s.replace(old,new,1))
+          PY
+      - name: Commit only index.html
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Use sound-fixed hero video'
+          git push
