@@ -1,4 +1,4 @@
-name: Standardize PLAY-FIGHT after hero only
+name: Standardize PLAY-FIGHT text only
 on:
   push:
     paths:
@@ -10,30 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Change PLAY-FIGHT wording only after hero
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('index.html')
-          s=p.read_text()
-          hero_start=s.find('<section class="hero"')
-          if hero_start < 0:
-              raise SystemExit('Hero section not found')
-          hero_end=s.find('</section>', hero_start)
-          if hero_end < 0:
-              raise SystemExit('Hero section end not found')
-          hero_end += len('</section>')
-          head=s[:hero_end]
-          tail=s[hero_end:]
-          for old in ('PLAYFIGHT','PLAY FIGHT','Play Fight','Play-Fight','play fight','play-fight'):
-              tail=tail.replace(old,'PLAY-FIGHT')
-          p.write_text(head+tail)
-          PY
-      - name: Commit only index.html
+      - name: Change wording only
+        run: sed -i '/^<main>$/,$ s/PLAYFIGHT/PLAY-FIGHT/g' index.html
+      - name: Commit
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Standardize PLAY-FIGHT after hero only'
+          git commit -m 'Standardize PLAY-FIGHT text only'
           git push
