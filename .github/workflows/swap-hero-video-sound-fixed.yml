@@ -1,4 +1,4 @@
-name: Repair hero sound script syntax
+name: Fix hero sound without freezing playback
 on:
   push:
     paths:
@@ -10,17 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Repair only the hero sound block
+      - name: Replace only hero sound and playback behavior
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          old="if(soundEnabled){video.muted=!heroVisible;if(heroVisible)}"
-          new="if(soundEnabled){video.muted=!heroVisible;}"
-          if s.count(old) != 1:
-              raise SystemExit(f'Expected one broken sound block, found {s.count(old)}')
-          p.write_text(s.replace(old,new,1))
+          script_start=s.index("<script>(()=>{const video=document.getElementById('hero-video');")
+          script_end=s.index("</script>", script_start)
+          new_script="""<script>(()=>{const video=document.getElementById('hero-video');if(!video)return;const heroSection=document.querySelector('.hero');let heroVisible=true;let soundEnabled=false;const startSound=()=>{if(soundEnabled)return;soundEnabled=true;video.volume=1;video.muted=false;const p=video.play();if(p&&typeof p.catch==='function'){p.catch(()=>{video.muted=true;});}};document.addEventListener('pointerdown',startSound,{capture:true,once:true});if(heroSection){const soundObserver=new IntersectionObserver((entries)=>{heroVisible=entries[0].isIntersecting;if(!soundEnabled)return;if(heroVisible){video.muted=false;if(video.paused){video.play().catch(()=>{});}}else{video.muted=true;}},{threshold:0});soundObserver.observe(heroSection);}const nav=document.querySelector('nav');const hero=document.querySelector('.hero');const syncNav=()=>{if(!nav||!hero)return;nav.classList.toggle('scrolled',window.scrollY>hero.offsetHeight-nav.offsetHeight);};syncNav();window.addEventListener('scroll',syncNav,{passive:true});window.addEventListener('resize',syncNav);})();</script>"""
+          p.write_text(s[:script_start]+new_script+s[script_end+9:])
           PY
       - name: Commit only index.html
         run: |
@@ -28,5 +27,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Repair hero sound script syntax'
+          git commit -m 'Fix hero sound without freezing playback'
           git push
