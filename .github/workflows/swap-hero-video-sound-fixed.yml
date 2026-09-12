@@ -1,4 +1,4 @@
-name: Fix hero audio without touching video playback
+name: Make hero sound start on first tap and toggle on later taps
 on:
   push:
     paths:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Replace only hero sound behavior
+      - name: Replace only hero sound interaction
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -18,7 +18,7 @@ jobs:
           s=p.read_text()
           script_start=s.index("<script>(()=>{const video=document.getElementById('hero-video');")
           script_end=s.index("</script>", script_start)
-          new_script="""<script>(()=>{const video=document.getElementById('hero-video');if(!video)return;const heroSection=document.querySelector('.hero');let heroVisible=true;let soundEnabled=false;const audio=document.createElement('audio');audio.src=video.currentSrc||video.src;audio.preload='auto';audio.loop=true;audio.volume=1;audio.style.display='none';document.body.appendChild(audio);const syncAudio=()=>{try{if(Number.isFinite(video.currentTime)&&Number.isFinite(audio.duration)){const drift=Math.abs((audio.currentTime||0)-video.currentTime);if(drift>.35)audio.currentTime=video.currentTime;}}catch(e){}};const enableSound=()=>{if(soundEnabled||!heroVisible)return;soundEnabled=true;syncAudio();audio.volume=1;const p=audio.play();if(p&&typeof p.catch==='function'){p.catch(()=>{soundEnabled=false;});}};document.addEventListener('pointerdown',enableSound,{capture:true});document.addEventListener('touchstart',enableSound,{capture:true,passive:true});if(heroSection){const soundObserver=new IntersectionObserver((entries)=>{heroVisible=entries[0].isIntersecting;if(!soundEnabled)return;if(heroVisible){syncAudio();audio.volume=1;}else{audio.volume=0;}},{threshold:0});soundObserver.observe(heroSection);}const nav=document.querySelector('nav');const hero=document.querySelector('.hero');const syncNav=()=>{if(!nav||!hero)return;nav.classList.toggle('scrolled',window.scrollY>hero.offsetHeight-nav.offsetHeight);};syncNav();window.addEventListener('scroll',syncNav,{passive:true});window.addEventListener('resize',syncNav);})();</script>"""
+          new_script="""<script>(()=>{const video=document.getElementById('hero-video');if(!video)return;const heroSection=document.querySelector('.hero');let heroVisible=true;let audioStarted=false;let soundWanted=false;const audio=document.createElement('audio');audio.src=video.currentSrc||video.src||video.getAttribute('src');audio.preload='auto';audio.loop=true;audio.volume=0;audio.style.display='none';document.body.appendChild(audio);audio.load();const syncAudio=()=>{try{if(Number.isFinite(video.currentTime)){const drift=Math.abs((audio.currentTime||0)-video.currentTime);if(drift>.35)audio.currentTime=video.currentTime;}}catch(e){}};const applySound=()=>{audio.volume=(audioStarted&&soundWanted&&heroVisible)?1:0;};const handleTap=()=>{if(!heroVisible)return;if(!audioStarted){soundWanted=true;syncAudio();audio.volume=1;const p=audio.play();if(p&&typeof p.then==='function'){p.then(()=>{audioStarted=true;applySound();}).catch(()=>{audioStarted=false;soundWanted=false;audio.volume=0;});}else{audioStarted=true;applySound();}return;}soundWanted=!soundWanted;if(soundWanted){syncAudio();if(audio.paused){const p=audio.play();if(p&&typeof p.catch==='function')p.catch(()=>{soundWanted=false;applySound();});}}applySound();};document.addEventListener('click',handleTap,{capture:true});if(heroSection){const soundObserver=new IntersectionObserver((entries)=>{heroVisible=entries[0].isIntersecting;if(heroVisible&&audioStarted&&soundWanted)syncAudio();applySound();},{threshold:0});soundObserver.observe(heroSection);}const nav=document.querySelector('nav');const hero=document.querySelector('.hero');const syncNav=()=>{if(!nav||!hero)return;nav.classList.toggle('scrolled',window.scrollY>hero.offsetHeight-nav.offsetHeight);};syncNav();window.addEventListener('scroll',syncNav,{passive:true});window.addEventListener('resize',syncNav);})();</script>"""
           p.write_text(s[:script_start]+new_script+s[script_end+9:])
           PY
       - name: Commit only index.html
@@ -27,5 +27,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Fix hero audio without touching video playback'
+          git commit -m 'Make first tap start hero sound and later taps toggle it'
           git push
