@@ -1,4 +1,4 @@
-name: Swap hero to sound-fixed video
+name: Update hero sound tap behavior
 on:
   push:
     paths:
@@ -6,20 +6,20 @@ on:
 permissions:
   contents: write
 jobs:
-  swap:
+  update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Replace hero video source only
+      - name: Update sound toggle only
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          old='%D7%A1%D7%A8%D7%98%D7%95%D7%9F%20%D7%A2%D7%9E%D7%95%D7%93%20%D7%A8%D7%90%D7%A9%D7%95%D7%9F%20%D7%A2%D7%9D%20%D7%9E%D7%95%D7%96%D7%99%D7%A7%D7%94%202.mp4'
-          new='%D7%A1%D7%A8%D7%98%D7%95%D7%9F%20%D7%A2%D7%9E%D7%95%D7%93%20%D7%A8%D7%90%D7%A9%D7%95%D7%9F%20%D7%A1%D7%90%D7%95%D7%A0%D7%93%20%D7%9E%D7%AA%D7%95%D7%A7%D7%9F.mp4'
+          old="const enableSound=()=>{video.muted=false;video.volume=1;const p=video.play();if(p&&typeof p.catch==='function'){p.catch(()=>{video.muted=true;video.play().catch(()=>{});});}};document.addEventListener('pointerdown',enableSound,{capture:true,once:true});document.addEventListener('touchend',enableSound,{capture:true,once:true});"
+          new="const toggleSound=()=>{if(video.muted){video.muted=false;video.volume=1;const p=video.play();if(p&&typeof p.catch==='function'){p.catch(()=>{video.muted=true;video.play().catch(()=>{});});}}else{video.muted=true;}};document.addEventListener('pointerdown',toggleSound,{capture:true});"
           if s.count(old) != 1:
-              raise SystemExit(f'Expected exactly one current hero video source, found {s.count(old)}')
+              raise SystemExit('Expected exactly one current sound block')
           p.write_text(s.replace(old,new,1))
           PY
       - name: Commit only index.html
@@ -28,5 +28,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Use sound-fixed hero video'
+          git commit -m 'Toggle hero sound on tap'
           git push
