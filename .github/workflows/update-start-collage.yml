@@ -1,4 +1,4 @@
-name: Move media after routes
+name: Remove workshop video caption
 on:
   push:
     branches: [main]
@@ -10,22 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Move only the media section
+      - name: Remove only the workshop video caption
         run: |
           python - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          media_start=s.index('<section class="media">')
-          media_end=s.index('</section>', media_start)+len('</section>')
-          media=s[media_start:media_end]
-          rest=s[:media_start]+s[media_end:]
-          marker='<section class="for-hosts">'
-          pos=rest.index(marker)
-          new=rest[:pos]+media+'\n'+rest[pos:]
-          if new==s:
+          old='<div class="embed-caption">מתוך סדנת PLAY-FIGHT</div>'
+          if old not in s:
               raise SystemExit(0)
-          p.write_text(new)
+          if s.count(old) != 1:
+              raise SystemExit('Expected exactly one workshop video caption; aborting without changes.')
+          p.write_text(s.replace(old,'',1))
           PY
       - name: Commit exact change
         run: |
@@ -33,5 +29,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "Move media section after how-to-start"
+          git commit -m "Remove workshop video caption"
           git push
