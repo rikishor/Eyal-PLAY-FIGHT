@@ -1,0 +1,29 @@
+name: Remove about green shape
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove green shape only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old='<div class="portrait-shape"><div><strong>איל בנר</strong><br><span>תנועה · משחק · מפגש אנושי</span></div></div>'
+          new='<div></div>'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new,1))
+          PY
+      - name: Commit exact shape removal
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Remove green about shape"
+          git push
