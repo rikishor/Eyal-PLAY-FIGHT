@@ -1,8 +1,7 @@
-name: Remove requested media sentence
+name: Replace Instagram block with uploaded video
 on:
   push:
     branches: [main]
-  workflow_dispatch:
 permissions:
   contents: write
 jobs:
@@ -10,24 +9,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Remove only the requested sentence
+      - name: Replace exact media block
         run: |
           python - <<'PY'
           from pathlib import Path
-          p=Path('index.html')
-          s=p.read_text()
-          old=' כאן אפשר לשלב סרטוני סדנאות, קטעים מהנחיה ועדויות.'
-          if old not in s:
-              raise SystemExit(0)
-          if s.count(old) != 1:
-              raise SystemExit('Expected exactly one target sentence; aborting without changes.')
-          p.write_text(s.replace(old,'',1))
+          p = Path('index.html')
+          s = p.read_text()
+          old = '<div class="embed"><iframe src="https://www.instagram.com/reel/REEL_ID/embed" title="PLAY-FIGHT — Reel"></iframe><div class="embed-caption">רגע מתוך העבודה</div></div>'
+          new = '<div class="embed"><video src="סרטון לאתר 3.mp4" controls playsinline style="width:100%;height:430px;border:0;border-radius:18px;display:block;background:#000"></video></div>'
+          if old in s:
+              if s.count(old) != 1:
+                  raise SystemExit('target count is not 1')
+              p.write_text(s.replace(old, new, 1))
+          Path('home.html').unlink(missing_ok=True)
+          Path('vercel.json').unlink(missing_ok=True)
           PY
-      - name: Commit exact change
-        run: |
-          if git diff --quiet; then exit 0; fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          git commit -m "Remove requested media sentence"
-          git push
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Replace Instagram block with uploaded video only
+          file_pattern: index.html home.html vercel.json
