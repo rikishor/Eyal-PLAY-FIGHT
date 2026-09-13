@@ -1,4 +1,4 @@
-name: Update retreat dates
+name: Update seminar date
 on:
   push:
     branches: [main]
@@ -9,24 +9,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Update two retreat date lines only
+      - name: Update seminar date only
         run: |
           python - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          a='<div>20–21.9 | ריטריט כיפור</div>'
-          b='<div>20-21.9 ריטריט כיפור</div>'
-          c='<div>17–19.12 | ריטריט PLAY-FIGHT</div>'
-          d='<div>17-19.12 ריטריט PLAY-FIGHT</div>'
-          assert s.count(a)==1
-          assert s.count(c)==1
-          p.write_text(s.replace(a,b,1).replace(c,d,1))
+          old='<div>🕒 הסמינר הבא: 28–30.1</div>'
+          new='<div>🕒 הסמינר הבא: 28–31.1</div>'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new,1))
           PY
-      - name: Commit exact text change
+      - name: Commit exact date change
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "Update retreat date formatting"
+          git commit -m "Update seminar date to 28-31.1"
           git push
