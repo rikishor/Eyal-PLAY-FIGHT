@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.eyalbener.com/</loc>
   </url>
   <url>
     <loc>https://www.eyalbener.com/contact</loc>
+  </url>
+  <url>
+    <loc>https://www.eyalbener.com/play-fight-martial-arts</loc>
+  </url>
+  <url>
+    <loc>https://www.eyalbener.com/touch-play-power</loc>
+  </url>
+  <url>
+    <loc>https://www.eyalbener.com/movement-touch-workshops</loc>
+  </url>
+  <url>
+    <loc>https://www.eyalbener.com/play-fight-locations</loc>
+  </url>
+  <url>
+    <loc>https://www.eyalbener.com/play-fight-beginners</loc>
   </url>
 </urlset>
