@@ -1,7 +1,6 @@
 name: Replace first media video only
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 permissions:
   contents: write
 jobs:
