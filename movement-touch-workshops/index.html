@@ -189,4 +189,19 @@ fbq('track','PageView');
 <section><h2>מה אפשר ללמוד בקורס PLAY-FIGHT מתמשך?</h2><p>קורס PLAY-FIGHT מאפשר להעמיק לאורך זמן בעבודה עם תנועה, מגע, משחק, כוח והקשבה. במקום לפגוש כל נושא פעם אחת, אפשר לחזור אליו שוב ושוב ולראות כיצד החוויה משתנה.</p><p>במהלך הקורס אפשר לחקור עבודה עם התנגדות וקונטרה, גבולות, שימוש בכוח, שיתוף פעולה, תחרותיות והאופן שבו אנחנו מגיבים כשאדם אחר אינו עושה את מה שציפינו ממנו.</p><p>הקבוצה המתמשכת מוסיפה רובד נוסף. ככל שנוצרת היכרות וביטחון בין המשתתפים, אפשר לפגוש אנשים שונים, עוצמות שונות וצורות שונות של קשר ומשחק.</p><p><strong>הקורס אינו מסלול ללימוד טכניקות לחימה; הוא תהליך מתמשך של חקירה דרך הגוף, שבו אפשר להכיר את דפוסי התגובה שלנו ולהרחיב את האפשרויות שלנו בתוך מפגש.</strong></p></section>
 <section><h2>איפה יש סדנאות וקורסים בתנועה ומגע בפרדס חנה ובצפון?</h2><p>איל בנר מנחה סדנאות וקורסים של PLAY-FIGHT ותנועה ומגע, וכן מלמד קונטקט אימפרוביזציה <a href="/play-fight-locations" style="color:var(--clay);text-decoration:none;font-style:italic">בפרדס חנה ובאזור הצפון</a>.</p><p>אפשר להשתתף בסדנת היכרות כדי להתנסות ב־PLAY-FIGHT, להצטרף לקורס מתמשך או להגיע לתרגול קונטקט אימפרוביזציה, בהתאם למסגרות שמתקיימות באותה תקופה.</p><p>העבודה של איל מחברת בין תנועה, מגע ומשחקיות לבין איכויות מעולמות הקונטקט אימפרוביזציה ואומנויות הלחימה, עם דגש על כוח, התנגדות, גבולות, הקשבה וקשר.</p><p><strong>למי שמחפש סדנת תנועה, מגע ומשחק בפרדס חנה או בצפון, אפשר לבחור בין מפגש היכרות, תרגול קונטקט אימפרוביזציה ותהליך PLAY-FIGHT מתמשך בהתאם לפעילות המתקיימת באותה תקופה.</strong></p></section></article><section class="participant-testimonial" aria-label="משוב משתתפת בקורס PLAY-FIGHT LEVEL 1" style="background:#ddc6a5;padding:64px 24px;text-align:center"><blockquote style="margin:0 auto;max-width:880px;font:400 clamp(1.25rem,2.2vw,1.9rem)/1.65 Heebo,Arial,sans-serif;color:#303129">״קורס חזק מצד אחד שסוחט את הגוף, אבל מאוד ממלא ומרגש, מעביר דרך חוויות ורגעים אישיים מעניינים וחדשים, ומייצר חיבורים אינטימיים וחוויות משותפות שלא ניתן לשחזר.״<cite style="display:block;margin-top:22px;font:600 .95rem/1.5 Rubik,Heebo,sans-serif;color:#5d594f;font-style:normal">יעל<span style="display:block;margin-top:3px;font:400 .86rem/1.5 Heebo,Arial,sans-serif;color:#6a655a">קורס PLAY-FIGHT LEVEL 1</span></cite></blockquote></section></main>
 <footer><div class="foot"><span>© איל בנר · PLAY-FIGHT</span><span>קיבוץ בית קשת · 050-366-5013 · eyalbener@gmail.com</span></div></footer>
+
+<!-- Meta Pixel: WhatsApp contact clicks -->
+<script>
+(function(){
+  document.addEventListener('click',function(event){
+    var target=event.target;
+    var link=target&&target.closest?target.closest('a[href]'):null;
+    if(!link)return;
+    var url;
+    try{url=new URL(link.href,window.location.href);}catch(e){return;}
+    if(url.hostname!=='wa.me'&&url.hostname!=='api.whatsapp.com'&&url.hostname!=='web.whatsapp.com')return;
+    if(typeof window.fbq==='function')window.fbq('track','Contact',{contact_method:'WhatsApp'});
+  });
+})();
+</script>
 </body></html>
