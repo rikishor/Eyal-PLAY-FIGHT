@@ -194,4 +194,19 @@ fbq('track','PageView');
 <section><h2>מה קורה בפעם הראשונה שמגיעים לסדנת PLAY-FIGHT?</h2><p>במפגש ראשון לא מצפים לדעת מראש איך עושים PLAY-FIGHT.</p><p>התרגול נבנה בהדרגה: מתחילים מהיכרות עם הגוף, המרחב והקבוצה, ובהמשך עוברים לתרגילים בזוגות שיכולים להכניס מגע, משחק, התנגדות וכוח.</p><p>ההנחיה נותנת מסגרת שבתוכה אפשר להתנסות ולגלות איך כל אחד מגיב. אין צורך לחקות משתתפים מנוסים או להגיע לדרך מסוימת שבה המפגש אמור להיראות.</p><p><strong>המפגש הראשון נועד לאפשר להכיר את השפה של PLAY-FIGHT דרך התנסות — ולא לבדוק אם אתם „טובים” בה.</strong></p></section>
 <section><h2>האם אפשר להגיע לבד או שצריך להגיע עם פרטנר?</h2><p>אפשר להגיע לסדנת PLAY-FIGHT לבד. אין צורך להביא פרטנר.</p><p>העבודה מתקיימת בזוגות ובקבוצה, ובמהלך הסדנה נפגשים עם משתתפים אחרים בהתאם למבנה התרגילים ולהנחיה.</p><p>עבודה עם אנשים שונים היא גם חלק מהחקירה: כל פרטנר מביא גוף, עוצמה, קצב ודרך מפגש אחרים.</p><p><strong>אפשר להגיע ל־PLAY-FIGHT לבד ולהכיר את הפרטנרים לתרגול בתוך הסדנה עצמה.</strong></p></section><p style="margin-top:24px"><a href="/play-fight-locations" style="color:var(--clay);text-decoration:none;font-style:italic">איפה אפשר להשתתף ב־PLAY-FIGHT? למיקומים ולפעילויות ←</a></p></article><section class="participant-testimonial" aria-label="משוב משתתפת בקורס PLAY-FIGHT LEVEL 1" style="background:#ddc6a5;padding:64px 24px;text-align:center"><blockquote style="margin:0 auto;max-width:880px;font:400 clamp(1.25rem,2.2vw,1.9rem)/1.65 Heebo,Arial,sans-serif;color:#303129">״חוויה מאוד מחברת לגוף, לקבוצה ולעצמי.״<cite style="display:block;margin-top:22px;font:600 .95rem/1.5 Rubik,Heebo,sans-serif;color:#5d594f;font-style:normal">יעל<span style="display:block;margin-top:3px;font:400 .86rem/1.5 Heebo,Arial,sans-serif;color:#6a655a">קורס PLAY-FIGHT LEVEL 1</span></cite></blockquote></section></main>
 <footer><div class="foot"><span>© איל בנר · PLAY-FIGHT</span><span>קיבוץ בית קשת · 050-366-5013 · eyalbener@gmail.com</span></div></footer>
+
+<!-- Meta Pixel: WhatsApp contact clicks -->
+<script>
+(function(){
+  document.addEventListener('click',function(event){
+    var target=event.target;
+    var link=target&&target.closest?target.closest('a[href]'):null;
+    if(!link)return;
+    var url;
+    try{url=new URL(link.href,window.location.href);}catch(e){return;}
+    if(url.hostname!=='wa.me'&&url.hostname!=='api.whatsapp.com'&&url.hostname!=='web.whatsapp.com')return;
+    if(typeof window.fbq==='function')window.fbq('track','Contact',{contact_method:'WhatsApp'});
+  });
+})();
+</script>
 </body></html>
