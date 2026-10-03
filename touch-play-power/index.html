@@ -183,4 +183,19 @@ fbq('track','PageView');
 <section><h2>מה הקשר בין משחק, כוח, גבולות וקשר אנושי?</h2><p>בכל מפגש בין אנשים מתקיימים גם רצונות, גבולות וכוחות. לפעמים אנחנו מובילים ולפעמים מובלים, לפעמים מסכימים ולפעמים מתנגדים, לפעמים רוצים להתקרב ולפעמים זקוקים למרחק.</p><p>במשחק גופני הדברים האלה מקבלים ביטוי מוחשי. אפשר להרגיש מה קורה כשאנחנו מפעילים כוח או פוגשים כוח, כשמישהו אומר לנו לא, כשאנחנו רוצים משהו שהפרטנר אינו רוצה, או כששני אנשים מצליחים ליצור יחד משהו שאף אחד מהם לא תכנן מראש.</p><p>המשחק מאפשר לנוע בין האפשרויות האלה מבלי להישאר בתפקיד אחד קבוע. אפשר להיות חזקים ורכים, להתנגד ולהקשיב, להוביל ולהיות מובלים, להתקרב ולהתרחק.</p><p><strong>כך משחק, כוח וגבולות אינם נושאים נפרדים מהקשר האנושי — הם הופכים לדרך לחקור דרך הגוף כיצד אנחנו פוגשים אדם אחר ונשארים גם בקשר עם עצמנו.</strong></p></section>
 </article></main>
 <footer><div class="foot"><span>© איל בנר · PLAY-FIGHT</span><span>קיבוץ בית קשת · 050-366-5013 · eyalbener@gmail.com</span></div></footer>
+
+<!-- Meta Pixel: WhatsApp contact clicks -->
+<script>
+(function(){
+  document.addEventListener('click',function(event){
+    var target=event.target;
+    var link=target&&target.closest?target.closest('a[href]'):null;
+    if(!link)return;
+    var url;
+    try{url=new URL(link.href,window.location.href);}catch(e){return;}
+    if(url.hostname!=='wa.me'&&url.hostname!=='api.whatsapp.com'&&url.hostname!=='web.whatsapp.com')return;
+    if(typeof window.fbq==='function')window.fbq('track','Contact',{contact_method:'WhatsApp'});
+  });
+})();
+</script>
 </body></html>
