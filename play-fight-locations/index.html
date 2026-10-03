@@ -188,4 +188,19 @@ fbq('track','PageView');
 <section><h2>איפה יש סדנאות תנועה, מגע ומשחק בתל אביב ובירושלים?</h2><p>סדנאות המשלבות תנועה, מגע ומשחק יכולות להתקיים במסגרות שונות. איל בנר מביא את עבודת ה־PLAY-FIGHT גם לתל אביב ולירושלים במועדים משתנים.</p><p>הסדנאות משלבות עבודה גופנית עם פרטנר ובקבוצה ויכולות לכלול משחק, מגע, התנגדות, כוח, גבולות והקשבה.</p><p>בנוסף לסדנאות הפתוחות, PLAY-FIGHT יכול להתקיים גם במסגרת קהילה, ארגון, פסטיבל או קבוצה שמזמינים את איל להנחות.</p><p><strong>הפעילות בתל אביב ובירושלים מתקיימת מעת לעת ולא כמערכת שבועית קבועה, ולכן כדאי לבדוק אילו סדנאות מתוכננות בכל תקופה.</strong></p></section>
 <section><h2>איפה איל בנר מלמד PLAY-FIGHT וקונטקט אימפרוביזציה?</h2><p>בסיס הפעילות המרכזי של איל בנר הוא באזור פרדס חנה והצפון. שם הוא מלמד ומנחה PLAY-FIGHT וקונטקט אימפרוביזציה במסגרות שונות.</p><p>בנוסף, איל מנחה מעת לעת סדנאות ומפגשים בתל אביב ובירושלים, וכן מגיע לקהילות, ארגונים, פסטיבלים וקבוצות במקומות נוספים.</p><p>סוג הפעילות משתנה בין תרגול קונטקט אימפרוביזציה, סדנת היכרות עם PLAY-FIGHT, קורס מתמשך, ריטריט או סדנה המוזמנת עבור קבוצה.</p><p><strong>לכן, כשמחפשים פעילות עם איל בנר, כדאי לבדוק את הפעילות העדכנית בפרדס חנה והצפון ואת הסדנאות המתקיימות מעת לעת בתל אביב, בירושלים ובמקומות נוספים.</strong></p></section></article></main>
 <footer><div class="foot"><span>© איל בנר · PLAY-FIGHT</span><span>קיבוץ בית קשת · 050-366-5013 · eyalbener@gmail.com</span></div></footer>
+
+<!-- Meta Pixel: WhatsApp contact clicks -->
+<script>
+(function(){
+  document.addEventListener('click',function(event){
+    var target=event.target;
+    var link=target&&target.closest?target.closest('a[href]'):null;
+    if(!link)return;
+    var url;
+    try{url=new URL(link.href,window.location.href);}catch(e){return;}
+    if(url.hostname!=='wa.me'&&url.hostname!=='api.whatsapp.com'&&url.hostname!=='web.whatsapp.com')return;
+    if(typeof window.fbq==='function')window.fbq('track','Contact',{contact_method:'WhatsApp'});
+  });
+})();
+</script>
 </body></html>
