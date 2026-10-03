@@ -159,4 +159,19 @@ fbq('track','PageView');
 <div class="cta"><strong>רוצים להתנסות בקונטקט?</strong><br>אפשר לבדוק עם איל מהו המפגש המתאים שמתקיים עכשיו.<br><a href="https://wa.me/972503665013" target="_blank" rel="noopener noreferrer">כתבו לאיל ב־WhatsApp ←</a></div>
 </article></main>
 <footer><div class="foot"><span>© איל בנר · PLAY-FIGHT</span><span>קיבוץ בית קשת · 050-366-5013 · eyalbener@gmail.com</span></div></footer>
+
+<!-- Meta Pixel: WhatsApp contact clicks -->
+<script>
+(function(){
+  document.addEventListener('click',function(event){
+    var target=event.target;
+    var link=target&&target.closest?target.closest('a[href]'):null;
+    if(!link)return;
+    var url;
+    try{url=new URL(link.href,window.location.href);}catch(e){return;}
+    if(url.hostname!=='wa.me'&&url.hostname!=='api.whatsapp.com'&&url.hostname!=='web.whatsapp.com')return;
+    if(typeof window.fbq==='function')window.fbq('track','Contact',{contact_method:'WhatsApp'});
+  });
+})();
+</script>
 </body></html>
