@@ -200,4 +200,19 @@ fbq('track','PageView');
 <section><h2>מה הקשר בין PLAY-FIGHT, קונטקט אימפרוביזציה ואומנויות לחימה?</h2><p>PLAY-FIGHT נוצר במפגש בין עולמות שונים של תנועה. מ<a href="/contact" style="color:var(--clay);text-decoration:none;font-style:italic">קונטקט אימפרוביזציה</a> נכנסות איכויות של מגע, עבודה עם משקל, הקשבה לפרטנר ותנועה שמתפתחת בזמן אמת. מאומנויות הלחימה נכנסות איכויות של כוח, התנגדות, קונטרה ועימות גופני.</p><p>ב־PLAY-FIGHT האיכויות האלה נפגשות בתוך משחק. אפשר לנוע עם הפרטנר ולרגע אחר כך להתנגד לו, להישען ואז לדחוף, לשתף פעולה ואז להיכנס לקונטרה. המפגש יכול להשתנות כל הזמן בלי לקבוע מראש אם אנחנו רוקדים, משחקים או נאבקים.</p><p>השילוב הזה מאפשר לחקור טווח רחב יותר של תגובות במפגש: לא רק לזרום ולא רק להתנגד, אלא לעבור בין האפשרויות ולגלות מה קורה לנו בכל אחת מהן.</p><p><strong>PLAY-FIGHT אינו קונטקט אימפרוביזציה ואינו אומנות לחימה. הוא יוצר מרחב משלו, שבו מגע, תנועה, משחק, כוח והקשבה יכולים להיפגש.</strong></p></section>
 </article></main>
 <footer><div class="foot"><span>© איל בנר · PLAY-FIGHT</span><span>קיבוץ בית קשת · 050-366-5013 · eyalbener@gmail.com</span></div></footer>
+
+<!-- Meta Pixel: WhatsApp contact clicks -->
+<script>
+(function(){
+  document.addEventListener('click',function(event){
+    var target=event.target;
+    var link=target&&target.closest?target.closest('a[href]'):null;
+    if(!link)return;
+    var url;
+    try{url=new URL(link.href,window.location.href);}catch(e){return;}
+    if(url.hostname!=='wa.me'&&url.hostname!=='api.whatsapp.com'&&url.hostname!=='web.whatsapp.com')return;
+    if(typeof window.fbq==='function')window.fbq('track','Contact',{contact_method:'WhatsApp'});
+  });
+})();
+</script>
 </body></html>
